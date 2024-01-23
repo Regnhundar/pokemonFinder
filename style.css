@@ -83,5 +83,12 @@ body {
 
 button {
     width:  200px;
-    height: 20px;
+    height: 30px;
+}
+#buttonGroup {
+    margin: 1rem;
+}
+.search-field {
+    width: 250px;
+    height: 30px;
 }

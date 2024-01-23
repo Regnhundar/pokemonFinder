@@ -1,29 +1,41 @@
 'use strict';
 
+// När sidan laddas händer allt i kodblocket under. 
 window.addEventListener('load',() => {
     let buttonOne = document.querySelector(`#buttonGroup button`)
     buttonOne.textContent = `Visa alla Pokemon`
-    buttonOne.addEventListener(`click`, showAllCards)
-
+    buttonOne.addEventListener(`click`, showAllCards) 
+    // Notera att när man lägger till en funktion i en eventlyssnare skriver man utan parantes.
+    //  Dvs inte showAllCards(). Inkluderar man parantes väntar den inte på klick utan kör direkt.
     let buttonTwo = document.querySelectorAll(`#buttonGroup button`)[1]
     buttonTwo.textContent = `Slumpa en Pokemon`
     buttonTwo.addEventListener(`click`, randomizer)
 
     let buttonGroup = document.querySelector(`#buttonGroup`);
+
     let inputField = document.createElement(`input`);
     inputField.type = `search`;
-    inputField.placeholder = `Skriv in namnet på en Pokemon`;
-    inputField.classList.add(`d-none`);
+    inputField.placeholder = `Skriv in namnet på en Pokemon...`;
+    inputField.classList.add(`d-none`, `search-field`);
+    // Lägger till eventlyssnare på inputfältet så när du trycker enter så skickas sökningen till funktionen. 
+    // If satsen kollar specifikt efter att du trycker på enter.
+    inputField.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            let searchWord = inputField.value.toLowerCase();
+            pokeSearch(searchWord);
+        }
+    });
     buttonGroup.appendChild(inputField);
+
     let inputButton = document.createElement(`button`)
     inputButton.textContent = `Sök`
     inputButton.classList.add(`d-none`)
     buttonGroup.appendChild(inputButton);
     inputButton.addEventListener(`click`, () => {
         let searchWord = inputField.value.toLowerCase();
-        pokeSearch(searchWord)});
-
-
+        pokeSearch(searchWord)
+    });
+    // Har endast en toggle för att ta fram eller dölja sökfältet med knapp.
     let buttonThree = document.querySelectorAll(`#buttonGroup button`)[2]
     buttonThree.textContent = `Sök efter en Pokemon`
     buttonThree.addEventListener(`click`, () => {
@@ -33,17 +45,23 @@ window.addEventListener('load',() => {
 
 });
 
+// Funktionen togglar utility classen "d-none" på #cardContainer. När sidan laddas in så är den redan inskriven så vid första knapptryck tas den bort.
+// Sedan läggs klassen d-none till på #form och #randomGen. För att lägga till den på båda via en queryselectorall så görs det via en forEach länk.
+// Om man inte använder forEach läggs den bara på den första inom parantesen. Dvs #form. 
+// Funktionen kollar också ifall #cardContainer är tom. Ifall den är tom körs renderCard() och renderar alla kort. Om den inte är tom togglar man enbart 
+// d-none klassen.
 function showAllCards () {
     let containerRef = document.querySelector('#cardContainer');
-    containerRef.innerHTML = ``;
     containerRef.classList.toggle(`d-none`)
     document.querySelectorAll('#form, #randomGen').forEach(classAdd => { classAdd.classList.add('d-none');
     });
+    if(containerRef.innerHTML === ``){
     pokemons.forEach(pokemon => {
         renderCard(pokemon, containerRef)
     });
-}
+}}
 
+// Ger dig ett random kort baserat på index-platsen i pokemons arrayen. 
 function randomizer() {
     let containerRef = document.querySelector('#randomGen');
     containerRef.innerHTML = ``;
@@ -51,12 +69,14 @@ function randomizer() {
     document.querySelectorAll('#form, #cardContainer').forEach(classAdd => { classAdd.classList.add('d-none');
     });
     let randomizedNumber = Math.floor(Math.random()*pokemons.length);
-    // let randomPokemon = pokemons.filter(hund => hund.id === randomizedNumber);
     let randomPokemon = pokemons[randomizedNumber]
 
     renderCard(randomPokemon, containerRef);
 }
 
+// Funktionen söker i pokemons arrayen. Den kollar ifall det du skrivit in är en siffra eller inte. 
+// OM det är bokstäver så kollar den efter namnet i objekten i pokemons arrayen och jämför ifall bokstavskombinationen inkluderas i något objekts namn.
+// Är det inte bokstäver så kollar den ifall det du skrivit in finns som id i något objekt. Förhoppningsvis är det en siffra men kontrolleras inte.
 function pokeSearch(searchWord) {
     let containerRef = document.querySelector('#form');
     containerRef.innerHTML = ``;
