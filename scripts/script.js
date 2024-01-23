@@ -6,7 +6,7 @@ window.addEventListener('load',() => {
     buttonOne.textContent = `Visa alla Pokemon`
     buttonOne.addEventListener(`click`, showAllCards) 
     // Notera att när man lägger till en funktion i en eventlyssnare skriver man utan parantes.
-    //  Dvs inte showAllCards(). Inkluderar man parantes väntar den inte på klick utan kör direkt.
+    // Dvs inte showAllCards(). Inkluderar man parantes väntar den inte på klick utan kör direkt.
     let buttonTwo = document.querySelectorAll(`#buttonGroup button`)[1]
     buttonTwo.textContent = `Slumpa en Pokemon`
     buttonTwo.addEventListener(`click`, randomizer)
@@ -29,7 +29,7 @@ window.addEventListener('load',() => {
 
     let inputButton = document.createElement(`button`)
     inputButton.textContent = `Sök`
-    inputButton.classList.add(`d-none`)
+    inputButton.classList.add(`d-none`, `input-button`)
     buttonGroup.appendChild(inputButton);
     inputButton.addEventListener(`click`, () => {
         let searchWord = inputField.value.toLowerCase();
@@ -53,20 +53,23 @@ window.addEventListener('load',() => {
 function showAllCards () {
     let containerRef = document.querySelector('#cardContainer');
     containerRef.classList.toggle(`d-none`)
-    document.querySelectorAll('#form, #randomGen').forEach(classAdd => { classAdd.classList.add('d-none');
+    document.querySelectorAll('#form, #randomGen, .input-button, .search-field').forEach(classAdd => { classAdd.classList.add('d-none');
     });
     if(containerRef.innerHTML === ``){
     pokemons.forEach(pokemon => {
         renderCard(pokemon, containerRef)
-    });
-}}
+    });}
+    else {
+        console.log(`Togglar enbart d-none klassen`);
+    }
+}
 
 // Ger dig ett random kort baserat på index-platsen i pokemons arrayen. 
 function randomizer() {
     let containerRef = document.querySelector('#randomGen');
     containerRef.innerHTML = ``;
     containerRef.classList.remove(`d-none`)
-    document.querySelectorAll('#form, #cardContainer').forEach(classAdd => { classAdd.classList.add('d-none');
+    document.querySelectorAll('#form, #cardContainer, .input-button, .search-field').forEach(classAdd => { classAdd.classList.add('d-none');
     });
     let randomizedNumber = Math.floor(Math.random()*pokemons.length);
     let randomPokemon = pokemons[randomizedNumber]
@@ -94,6 +97,7 @@ function pokeSearch(searchWord) {
     }
 }
 
+// Tar emot objekt och information om vilken container som ska fyllas med kort. Sedan renderas korten ut i rätt container.
 function renderCard(pokemon, containerRef) {
 
     const cardRef = document.createElement('div');
